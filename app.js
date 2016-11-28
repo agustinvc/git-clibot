@@ -1,11 +1,24 @@
-var express = require('express');
-var BinaryServer = require('binaryjs').BinaryServer;
-var fs = require('fs');
-var wav = require('wav');
+'use strict';
 
-var port = 3700;
-var outFile = 'demo.wav';
-var app = express();
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.status(200).send('Hello, world!');
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+  console.log('Press Ctrl+C to quit.');
+});
+
+const BinaryServer = require('binaryjs').BinaryServer;
+const fs = require('fs');
+const wav = require('wav');
+
+let outFile = 'demo.wav';
 
 app.set('views', __dirname + '/tpl');
 app.set('view engine', 'jade');
@@ -16,16 +29,16 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-app.listen(port);
+app.listen(PORT);
 
-console.log('server open on port ' + port);
+console.log('server open on port ' + PORT);
 
-binaryServer = BinaryServer({port: 9001});
+let binaryServer = BinaryServer({port: 9001});
 
 binaryServer.on('connection', function(client) {
   console.log('new connection');
 
-  var fileWriter = new wav.FileWriter(outFile, {
+  let fileWriter = new wav.FileWriter(outFile, {
     channels: 1,
     sampleRate: 48000,
     bitDepth: 16
